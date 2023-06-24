@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../api/weather_http.dart';
+
 class HomeController {
   ///Use to MVC
   late BuildContext context;
@@ -17,7 +19,11 @@ class HomeController {
     //_pushNotificationsProvider.requestPermission();
   }
 
-
+  getLocationData() async {
+    WeatherModel weatherModel = WeatherModel();
+    var weatherData = await weatherModel.getCityWeather("London");
+    print(weatherData.toString());
+  }
 
   void dispose() {
     //TODO: IMPLEMENT DISPOSE TO YOUR LISTENERS

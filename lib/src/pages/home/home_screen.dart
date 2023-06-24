@@ -1,8 +1,10 @@
+import 'package:assessment_di/src/models/weather.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-
+import 'package:http/http.dart';
+import '../../api/weather_http.dart';
 import 'home_controller.dart';
 
 class Home extends StatefulWidget {
@@ -14,21 +16,9 @@ class Home extends StatefulWidget {
 
 class _AboutPageState extends State<Home> with TickerProviderStateMixin {
   final HomeController _con = HomeController();
+  var isLoades = false;
 
   Widget customSearchBar = const Text('Inicio');
-  int currentIndex = 0;
-
-  final titlePages = [
-    "Inicio",
-    "Marcadores",
-    "Completados",
-    "Vencidos ",
-    "Acerca de ",
-  ];
-
-  TextEditingController _searchQueryController = TextEditingController();
-  bool _isSearching = false;
-  String searchQuery = "";
 
   @override
   void initState() {
@@ -37,6 +27,7 @@ class _AboutPageState extends State<Home> with TickerProviderStateMixin {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       _con.init(context, refresh);
     });
+    _con.getLocationData();
   }
 
   @override
@@ -45,7 +36,20 @@ class _AboutPageState extends State<Home> with TickerProviderStateMixin {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: const Color(0xFFF1F1F1),
+      key: _con.key,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF375C8E),
+        title: Text("App de Clima"),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [],
+        ),
+      ),
+    );
   }
 
   void refresh() {
