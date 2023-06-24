@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../api/weather_http.dart';
 
-class HomeController {
+class CityController {
   ///Use to MVC
   late BuildContext context;
   late Function refresh;
@@ -19,28 +21,32 @@ class HomeController {
   late DateTime date;
   Color colorBackground = Colors.white;
 
-
   init(BuildContext context, Function refresh) {
 
     this.context = context;
     this.refresh = refresh;
 
+    Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+    cityName = arguments['city'].toString();
+
+    getLocationData();
     refresh();
   }
 
   getLocationData() async {
     WeatherModel weatherModel = WeatherModel();
-    var weatherData = await weatherModel.getCityWeather("Ontario");
+    var weatherData = await weatherModel.getCityWeather(cityName);
     print(weatherData.toString());
 
-    cityName = weatherData['name'].toString();
     temperature = double.parse(weatherData['main']['temp'].toString());
     mainDescription = weatherData['weather'][0]["main"].toString();
     description = weatherData['weather'][0]["description"].toString();
 
     getCurrentDate();
-
     isCityLoaded=true;
+
+    print(cityName.toString());
+
     refresh();
   }
 
@@ -60,15 +66,10 @@ class HomeController {
   }
 
   void setColorHour(){
+    print("data " + date.hour.toString());
     if(date.hour>18) colorBackground = Color(0xFF243B4A);
     else if(date.hour>12) colorBackground = Color(0xFF0E6BA8);
     else colorBackground = Color(0xFF87BCDE);
-  }
-
-  void goToSignUpPage(String city) {
-    Navigator.pushNamed(context, 'city', arguments: {
-    'city': city,
-    });
   }
 
   void dispose() {

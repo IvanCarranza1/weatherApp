@@ -1,3 +1,4 @@
+import 'package:assessment_di/src/pages/cityInfo/city_screen.dart';
 import 'package:assessment_di/src/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -39,8 +40,8 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       getPages: [
-        GetPage(name: '/splash', page: () => const Home()),
-
+        GetPage(name: '/home', page: () => const Home()),
+        GetPage(name: '/city', page: () => const City()),
       ],
     );
   }

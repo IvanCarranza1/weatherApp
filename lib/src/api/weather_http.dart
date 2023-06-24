@@ -32,7 +32,7 @@ class WeatherModel {
   late int status;
 
   Future<dynamic> getCityWeather(String cityName) async {
-    var url = '$weatherApiUrl?q=$cityName&appid=$apiKey&units=metric';
+    var url = '$weatherApiUrl?q=$cityName&appid=$apiKey&units=metric&lang=es';
     NetworkData networkHelper = NetworkData(url);
     var weatherData = networkHelper.getData();
     return weatherData;
