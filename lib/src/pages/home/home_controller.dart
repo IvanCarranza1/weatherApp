@@ -46,10 +46,10 @@ class HomeController {
       return;
     }
 
-    WeatherModel weatherModel = WeatherModel();
+    WeatherApi weatherApi = WeatherApi();
     var weatherData;
-    if(byCityName) weatherData = await weatherModel.getCityWeather(cityName);
-    else weatherData = await weatherModel.getCityByCoordinates();
+    if(byCityName) weatherData = await weatherApi.getCityWeather(cityName);
+    else weatherData = await weatherApi.getCityByCoordinates();
 
     if(weatherData==null){
       Navigator.pop(context);
@@ -72,8 +72,8 @@ class HomeController {
 
 
   getForecastData() async {
-    WeatherModel weatherModel = WeatherModel();
-    var forecastData = await weatherModel.getCityForecast(cityName);
+    WeatherApi weatherApi = WeatherApi();
+    var forecastData = await weatherApi.getCityForecast(cityName);
     hour1 = getDateForecast(forecastData['list'][0]['dt_txt'].toString());
     hour2 = getDateForecast(forecastData['list'][1]['dt_txt'].toString());
     hour3 = getDateForecast(forecastData['list'][2]['dt_txt'].toString());
@@ -96,25 +96,10 @@ class HomeController {
     DateTime now = new DateTime.now();
     date = new DateTime(now.year, now.month, now.day, now.hour);
     String dateFormat=date.day.toString()+"/"+date.month.toString()+"/"+date.year.toString();
-    setColorHour();
     return dateFormat;
   }
 
-  String getImageWeather(String description){
-    if(description=='Clouds')return 'assets/images/nublado.png';
-    else if(description=='Thunderstorm')return 'assets/images/trueno.png';
-    else if(description=='Drizzle')return 'assets/images/nubes.png';
-    else if(description=='Rain')return 'assets/images/lluvioso.png';
-    else if(description=='Snow')return 'assets/images/nieve.png';
-    else if(description=='Clear')return 'assets/images/sun.png';
-    else return 'assets/images/tierra.png';
-  }
 
-  void setColorHour(){
-    if(date.hour>18) colorBackground = Color(0xFF243B4A);
-    else if(date.hour>12) colorBackground = Color(0xFF0E6BA8);
-    else colorBackground = Color(0xFF87BCDE);
-  }
 
   Future<String> getCityDefault()async {
     try {
@@ -143,8 +128,17 @@ class HomeController {
     return dateDay.split("-")[2]+'/'+dateDay.split("-")[1] + ' '+ dateHour;
   }
 
+  String getImageWeather(String description){
+    if(description=='Clouds')return 'assets/images/nublado.png';
+    else if(description=='Thunderstorm')return 'assets/images/trueno.png';
+    else if(description=='Drizzle')return 'assets/images/nubes.png';
+    else if(description=='Rain')return 'assets/images/lluvioso.png';
+    else if(description=='Snow')return 'assets/images/nieve.png';
+    else if(description=='Clear')return 'assets/images/sun.png';
+    else return 'assets/images/tierra.png';
+  }
+
   void dispose() {
-    //TODO: IMPLEMENT DISPOSE TO YOUR LISTENERS
   }
 
 }

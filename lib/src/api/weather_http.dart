@@ -30,7 +30,7 @@ class NetworkData {
 const weatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather';
 const forecastApiUrl = 'http://api.openweathermap.org/data/2.5/forecast';
 
-class WeatherModel {
+class WeatherApi {
   String apiKey = 'bd85f8c4f0366a9fd5787e20e7fe5c39';
   late int status;
 

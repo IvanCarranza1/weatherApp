@@ -41,8 +41,8 @@ class CityController {
 
   getLocationData() async {
     dialog.showProgressDialog(context);
-    WeatherModel weatherModel = WeatherModel();
-    var weatherData = await weatherModel.getCityWeather(cityName);
+    WeatherApi weatherApi = WeatherApi();
+    var weatherData = await weatherApi.getCityWeather(cityName);
     if(weatherData==null){
       Navigator.pop(context);
       return;
