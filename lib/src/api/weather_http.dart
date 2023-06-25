@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:assessment_di/src/models/location.dart';
+
 /// step 2. class that Fetch data from API using url
 /// weather API network helper
 /// pass the weatherAPI url
@@ -26,13 +28,31 @@ class NetworkData {
 /// we can get data by location coordinates or city name
 /// N.B there are many other ways of getting weather data through the url
 const weatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+const forecastApiUrl = 'http://api.openweathermap.org/data/2.5/forecast';
 
 class WeatherModel {
-  String apiKey = '2e9714911e1deb0a2ee62104c0b5928b';
+  String apiKey = 'bd85f8c4f0366a9fd5787e20e7fe5c39';
   late int status;
 
   Future<dynamic> getCityWeather(String cityName) async {
     var url = '$weatherApiUrl?q=$cityName&appid=$apiKey&units=metric&lang=es';
+    NetworkData networkHelper = NetworkData(url);
+    var weatherData = networkHelper.getData();
+    return weatherData;
+  }
+
+  Future<dynamic> getCityByCoordinates() async {
+    Location location = Location();
+    await location.getCurrentLocation();
+
+    var url = '$weatherApiUrl?lat=${location.latitude}&lon=${location.longitide}&appid=$apiKey&units=metric&lang=es';
+    NetworkData networkHelper = NetworkData(url);
+    var weatherData = networkHelper.getData();
+    return weatherData;
+  }
+
+  Future<dynamic> getCityForecast(String cityName) async {
+    var url = '$forecastApiUrl?q=$cityName&appid=$apiKey&lang=es&units=Metric';
     NetworkData networkHelper = NetworkData(url);
     var weatherData = networkHelper.getData();
     return weatherData;

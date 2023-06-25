@@ -31,7 +31,7 @@ class _CityPageState extends State<City> with TickerProviderStateMixin {
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-      backgroundColor: _con.colorBackground,
+      backgroundColor: Color(0xFF344966),
       key: _con.key,
       appBar: AppBar(
         leading: IconButton(
@@ -41,20 +41,29 @@ class _CityPageState extends State<City> with TickerProviderStateMixin {
       ),
       body: SafeArea(
         child: Center(
-          child: Container(
-            color: _con.colorBackground,
-            child: _con.isCityLoaded?Column(
-              children: [
-                _cityText(),
-                _temperatureText(),
-                _imageWeather(),
-                _descriptionText(),
-                _dateText(),
-              ],
-            ):SizedBox(height: 20,),
+          child: SingleChildScrollView(
+            child: Container(
+              child: _con.isCityLoaded
+                  ? LoadCityInfo()
+                  : showNoCityFound(),
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget LoadCityInfo() {
+    return Column(
+      children: [
+        _cityText(),
+        _temperatureText(),
+        _imageWeather(),
+        _descriptionText(),
+        _dateText(),
+        SizedBox(height: 30),
+        _buttonSaveCity()
+      ],
     );
   }
 
@@ -87,7 +96,7 @@ class _CityPageState extends State<City> with TickerProviderStateMixin {
 
   Widget _temperatureText() {
     return Text(
-      _con.temperature.toString()+"°",
+      _con.temperature.toString() + "°",
       style: const TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 45,
@@ -109,7 +118,7 @@ class _CityPageState extends State<City> with TickerProviderStateMixin {
 
   Widget _dateText() {
     return Text(
-      _con.getCurrentDate(),
+      _con.mainDescription,
       style: const TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 15,
@@ -117,4 +126,47 @@ class _CityPageState extends State<City> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Widget _buttonSaveCity() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+          ),
+      onPressed: _con.saveCityDefault,
+      child: Text('Guardar por defecto', style: TextStyle(
+        color: Colors.black87
+      ),),
+    );
+  }
+
+  Widget showNoCityFound() {
+    return Column(
+      children: [
+        _imageEmpty(),
+        SizedBox(height: 40,),
+        _emptyText()
+      ],
+    );
+  }
+
+  Widget _imageEmpty() {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.50,
+      child: Image.asset('assets/images/tierra.png'),
+    );
+  }
+
+  Widget _emptyText() {
+    return Text(
+      'No se ha encontrado la ciudad seleccionada',
+      style: const TextStyle(
+        fontWeight: FontWeight.w700,
+        fontSize: 15,
+        color: Colors.black54,
+      ),
+    );
+  }
 }
+
+

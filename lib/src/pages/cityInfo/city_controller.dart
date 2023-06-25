@@ -1,8 +1,11 @@
+import 'package:assessment_di/src/utils/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
+import 'package:assessment_di/src/utils/progress_dialog.dart' as dialog;
 import '../../api/weather_http.dart';
+import 'package:assessment_di/src/utils/snackbar.dart' as snackbar;
+
 
 class CityController {
   ///Use to MVC
@@ -19,33 +22,39 @@ class CityController {
   late String weatherIcon;
   late String tempIcon;
   late DateTime date;
-  Color colorBackground = Colors.white;
+
+  late SharedPref _sharedPref;
 
   init(BuildContext context, Function refresh) {
 
     this.context = context;
     this.refresh = refresh;
+    _sharedPref = SharedPref();
 
     Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
     cityName = arguments['city'].toString();
 
     getLocationData();
+
     refresh();
   }
 
   getLocationData() async {
+    dialog.showProgressDialog(context);
     WeatherModel weatherModel = WeatherModel();
     var weatherData = await weatherModel.getCityWeather(cityName);
-    print(weatherData.toString());
-
+    if(weatherData==null){
+      Navigator.pop(context);
+      return;
+    }
     temperature = double.parse(weatherData['main']['temp'].toString());
     mainDescription = weatherData['weather'][0]["main"].toString();
     description = weatherData['weather'][0]["description"].toString();
+    Navigator.pop(context);
 
+    print("asdasd" + mainDescription);
     getCurrentDate();
     isCityLoaded=true;
-
-    print(cityName.toString());
 
     refresh();
   }
@@ -55,22 +64,25 @@ class CityController {
     DateTime now = new DateTime.now();
     date = new DateTime(now.year, now.month, now.day, now.hour);
     String dateFormat=date.day.toString()+"/"+date.month.toString()+"/"+date.year.toString();
-    setColorHour();
     return dateFormat;
   }
 
-  String getImageWeather(){
-    if(mainDescription=='Clouds')return 'assets/images/nubes.png';
-    else if(mainDescription=='Clear')return 'assets/images/sun.png';
-    else return 'assets/images/test.png';
+  void saveCityDefault()async{
+    await _sharedPref.save('city', cityName);
+    snackbar.Snackbar.showSnackbarCorrect(context, key, "Guardada por defecto");
   }
 
-  void setColorHour(){
-    print("data " + date.hour.toString());
-    if(date.hour>18) colorBackground = Color(0xFF243B4A);
-    else if(date.hour>12) colorBackground = Color(0xFF0E6BA8);
-    else colorBackground = Color(0xFF87BCDE);
+  String getImageWeather(){
+    if(mainDescription=='Clouds')return 'assets/images/nublado.png';
+    else if(mainDescription=='Thunderstorm')return 'assets/images/trueno.png';
+    else if(mainDescription=='Drizzle')return 'assets/images/nubes.png';
+    else if(mainDescription=='Rain')return 'assets/images/lluvioso.png';
+    else if(mainDescription=='Snow')return 'assets/images/nieve.png';
+    else if(mainDescription=='Clear')return 'assets/images/sun.png';
+    else return 'assets/images/tierra.png';
   }
+
+
 
   void dispose() {
     //TODO: IMPLEMENT DISPOSE TO YOUR LISTENERS
